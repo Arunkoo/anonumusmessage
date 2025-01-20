@@ -4,7 +4,7 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { messageId: string } }
 ) {
   const messageId = params.messageId;
