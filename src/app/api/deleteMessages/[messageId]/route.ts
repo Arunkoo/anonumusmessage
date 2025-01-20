@@ -5,17 +5,24 @@ import UserModel from "@/model/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(request: NextRequest) {
-  const { messageId } = request.params; // Accessing messageId from the URL parameters
+  // Accessing messageId from the dynamic URL part
+  const messageId = request.nextUrl.pathname.split("/").pop(); // Extracting messageId from the URL path
+
+  if (!messageId) {
+    return NextResponse.json(
+      { success: false, message: "Message ID is missing" },
+      { status: 400 }
+    );
+  }
+
   await dbConnect();
 
   const session = await getServerSession(authOptions);
   const user = session?.user;
+
   if (!session || !user) {
     return NextResponse.json(
-      {
-        success: false,
-        message: "Not authenticated",
-      },
+      { success: false, message: "Not authenticated" },
       { status: 401 }
     );
   }
@@ -32,17 +39,15 @@ export async function DELETE(request: NextRequest) {
         { status: 404 }
       );
     }
+
     return NextResponse.json(
       { message: "Message deleted", success: true },
       { status: 200 }
     );
   } catch (error) {
-    console.log("unexpected error", error);
+    console.log("Unexpected error", error);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to delete a message",
-      },
+      { success: false, message: "Failed to delete a message" },
       { status: 500 }
     );
   }
