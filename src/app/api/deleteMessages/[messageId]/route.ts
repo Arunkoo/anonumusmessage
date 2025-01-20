@@ -2,19 +2,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { messageId: string } }
-) {
-  const messageId = params.messageId;
+export async function DELETE(request: NextRequest) {
+  const { messageId } = request.params; // Accessing messageId from the URL parameters
   await dbConnect();
 
   const session = await getServerSession(authOptions);
   const user = session?.user;
   if (!session || !user) {
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         message: "Not authenticated",
@@ -30,18 +27,18 @@ export async function DELETE(
     );
 
     if (updateResult.modifiedCount === 0) {
-      return Response.json(
+      return NextResponse.json(
         { message: "Message not found or already deleted", success: false },
         { status: 404 }
       );
     }
-    return Response.json(
+    return NextResponse.json(
       { message: "Message deleted", success: true },
       { status: 200 }
     );
   } catch (error) {
     console.log("unexpected error", error);
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         message: "Failed to delete a message",
