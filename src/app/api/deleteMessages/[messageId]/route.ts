@@ -2,16 +2,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
+import { NextRequest } from "next/server";
 
 export async function DELETE(
-  _request: Request,
+  _request: NextRequest,
   { params }: { params: { messageId: string } }
 ) {
   const messageId = params.messageId;
   await dbConnect();
 
   const session = await getServerSession(authOptions);
-  // console.log("Get Message session", session);
   const user = session?.user;
   if (!session || !user) {
     return Response.json(
@@ -44,7 +44,7 @@ export async function DELETE(
     return Response.json(
       {
         success: false,
-        message: "Failed to delete a messages",
+        message: "Failed to delete a message",
       },
       { status: 500 }
     );
