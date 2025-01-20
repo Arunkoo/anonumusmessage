@@ -7,7 +7,7 @@ import { ApiResponse } from "@/types/apiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Key, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCcw } from "lucide-react";
@@ -202,7 +202,7 @@ const Page = () => {
           {messages.length > 0 ? (
             messages.map((message) => (
               <MessageCard
-                key={message._id}
+                key={message._id as Key}
                 message={message}
                 onMessageDelete={handleDeleteMessage}
               />
